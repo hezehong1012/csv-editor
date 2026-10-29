@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online CSV Editor — Free, Browser-Based, No Upload</title>
+<meta name="description" content="Free browser-based tool to edit CSV / TSV / Excel. Drag & drop to open and edit on the spot, convert dates, and generate realistic random data (SSN, My Number, phone numbers). Your data never leaves the browser.">
+<meta name="keywords" content="csv editor online, edit csv online free, csv viewer, csv to excel, random data generator, fake ssn generator, mock data csv">
+<link rel="canonical" href="https://csv-editor-mu.vercel.app/en/">
+<link rel="alternate" hreflang="ja" href="https://csv-editor-mu.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://csv-editor-mu.vercel.app/en/">
+<link rel="alternate" hreflang="x-default" href="https://csv-editor-mu.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Online CSV Editor — Free, Browser-Based, No Upload">
+<meta property="og:description" content="Edit CSV / TSV / Excel in your browser. Your data is never uploaded.">
+<meta property="og:url" content="https://csv-editor-mu.vercel.app/en/">
+<meta name="twitter:card" content="summary">
+<meta name="google-site-verification" content="Z1vua0Vo7S6XuQMPogmaM0mN5b5TAKBMX3Vg7AgblTs">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="icon" href="data:,">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"CSV Editor Online","url":"https://csv-editor-mu.vercel.app/en/","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Can I edit CSV without uploading it to a server?","acceptedAnswer":{"@type":"Answer","text":"Yes. Everything runs in your browser; files are never uploaded. No sign-up or login is required."}},
+{"@type":"Question","name":"Which file formats are supported?","acceptedAnswer":{"@type":"Answer","text":"Import CSV, TSV, text and Excel (.xlsx, multi-sheet). Export to Excel, CSV (UTF-8/Shift-JIS/EUC-JP), TSV, JSON and JSON Lines."}},
+{"@type":"Question","name":"Does it handle different encodings and delimiters?","acceptedAnswer":{"@type":"Answer","text":"Yes. Auto-detects UTF-8, UTF-8 BOM, Shift-JIS, EUC-JP and Windows-1252, and comma/semicolon/tab/pipe delimiters. You can also override manually."}},
+{"@type":"Question","name":"Can I generate random SSN, My Number or phone numbers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Generate compliant US SSN, UK NINo, Japanese My Number (with check digit), region-formatted phone numbers, and patterned random dates."}},
+{"@type":"Question","name":"Does it work with large CSV files?","acceptedAnswer":{"@type":"Answer","text":"It runs within your browser's memory. Pagination keeps editing smooth for tens of thousands of rows."}}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"Home","item":"https://csv-editor-mu.vercel.app/en/"}
+]}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="/en/">CSV<span>Editor</span></a>
+    <nav class="site-nav">
+      <a href="#tool">Tool</a><a href="#features">Features</a><a href="#howto">How to</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="lang-switch" href="/">日本語</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Online CSV Editor — Free, Browser-Based, No Upload</h1>
+    <p>Drag & drop to open CSV / TSV / Excel and edit on the spot. Convert date formats and generate realistic random data (SSN / My Number / phone numbers). Nothing is ever uploaded.</p>
+    <div class="badges">
+      <span class="badge">100% Client-Side</span><span class="badge">No Signup</span><span class="badge">Free</span>
+    </div>
+  </div>
+</section>
+
+<main class="container" id="tool">
+  <div id="app"></div>
+
+  <section class="content-block" id="features">
+    <h2>Features</h2>
+    <div class="features">
+      <div class="feature"><h3>Edit right in the browser</h3><p>Click any cell to edit. Add/delete rows & columns, rename headers, sort, filter and instant search.</p></div>
+      <div class="feature"><h3>Flexible input</h3><p>Drag & drop, click-to-browse, paste from clipboard, and a built-in sample dataset. Multi-sheet Excel supported.</p></div>
+      <div class="feature"><h3>Encoding & delimiter detection</h3><p>Auto-detect UTF-8, BOM, Shift-JIS, EUC-JP and Windows-1252, plus comma/tab/semicolon delimiters.</p></div>
+      <div class="feature"><h3>Region-aware random data</h3><p>Compliant US SSN, UK NINo, Japanese My Number (check digit), region-formatted phones and patterned random dates.</p></div>
+      <div class="feature"><h3>Export anywhere</h3><p>One-click download to Excel, CSV (with encoding/delimiter/line-ending options), TSV, JSON and JSON Lines.</p></div>
+      <div class="feature"><h3>Privacy first</h3><p>Files never leave your browser. Everything is processed locally — safe for sensitive data.</p></div>
+    </div>
+  </section>
+
+  <section class="content-block" id="howto">
+    <h2>How it works (3 steps)</h2>
+    <ol class="steps">
+      <li>Drag & drop a CSV / TSV / Excel file, or load the sample. Choose encoding and delimiter if needed.</li>
+      <li>Click cells to edit, or use the "Generate / Transform" panel to add converted dates and random-data columns.</li>
+      <li>Export to Excel / CSV / TSV / JSON from the export panel. The file saves to your device.</li>
+    </ol>
+  </section>
+
+  <section class="content-block" id="faq">
+    <h2>Frequently asked questions</h2>
+    <details class="faq-item"><summary>Can I edit CSV without uploading it to a server?</summary><div class="faq-body">Yes. Everything runs in your browser; files are never uploaded. No sign-up or login is required.</div></details>
+    <details class="faq-item"><summary>Which file formats are supported?</summary><div class="faq-body">Import CSV, TSV, text and Excel (.xlsx, multi-sheet). Export to Excel, CSV (UTF-8/Shift-JIS/EUC-JP), TSV, JSON and JSON Lines.</div></details>
+    <details class="faq-item"><summary>Does it handle different encodings and delimiters?</summary><div class="faq-body">Yes. Auto-detects UTF-8, UTF-8 BOM, Shift-JIS, EUC-JP and Windows-1252, and comma/semicolon/tab/pipe delimiters. You can also override manually.</div></details>
+    <details class="faq-item"><summary>Can I generate random SSN, My Number or phone numbers?</summary><div class="faq-body">Yes. Generate compliant US SSN, UK NINo, Japanese My Number (with check digit), region-formatted phone numbers, and patterned random dates.</div></details>
+    <details class="faq-item"><summary>Does it work with large CSV files?</summary><div class="faq-body">It runs within your browser's memory. Pagination keeps editing smooth for tens of thousands of rows.</div></details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>Everything runs in your browser. Files are never uploaded to a server.</p>
+    <p><a href="/en/privacy.html">Privacy</a><a href="/en/terms.html">Terms</a><a href="/">日本語</a></p>
+  </div>
+</footer>
+
+<script src="../assets/vendor/papaparse.min.js"></script>
+<script src="../assets/vendor/xlsx.full.min.js"></script>
+<script src="../assets/vendor/encoding.min.js"></script>
+<script src="../assets/js/generators.js"></script>
+<script src="../assets/i18n.js"></script>
+<script src="../assets/app.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WERRPRW455"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WERRPRW455');</script>
+</body>
+</html>
