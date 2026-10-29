@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>オンラインCSVエディタ ― 完全無料・ブラウザ完結・データ送信なし</title>
+<meta name="description" content="ブラウザだけでCSV/TSV/Excelを編集できる無料ツール。ドラッグ＆ドロップで開いてその場で編集、日付変換・マイナンバー/SSN/電話番号のランダム生成にも対応。データはサーバーに送信されません。">
+<meta name="keywords" content="CSV エディター, csv 編集, csv 変換, csv excel, オンライン csv, モックデータ生成, マイナンバー 生成">
+<link rel="canonical" href="https://csv-editor-mu.vercel.app/">
+<link rel="alternate" hreflang="ja" href="https://csv-editor-mu.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://csv-editor-mu.vercel.app/en/">
+<link rel="alternate" hreflang="x-default" href="https://csv-editor-mu.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:title" content="オンラインCSVエディタ ― 完全無料・ブラウザ完結">
+<meta property="og:description" content="ブラウザだけでCSV/TSV/Excelを編集。データはサーバーに送信されません。">
+<meta property="og:url" content="https://csv-editor-mu.vercel.app/">
+<meta name="twitter:card" content="summary">
+<meta name="google-site-verification" content="Z1vua0Vo7S6XuQMPogmaM0mN5b5TAKBMX3Vg7AgblTs">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="data:,">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"CSV Editor Online","url":"https://csv-editor-mu.vercel.app/","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"CSVをサーバーに送信せずに編集できますか？","acceptedAnswer":{"@type":"Answer","text":"はい。当ツールはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。"}},
+{"@type":"Question","name":"対応しているファイル形式は？","acceptedAnswer":{"@type":"Answer","text":"CSV、TSV、テキスト、Excel(.xlsx)の読み込みに対応。書き出しは Excel、CSV（UTF-8/Shift-JIS/EUC-JP）、TSV、JSON、JSON Lines から選べます。"}},
+{"@type":"Question","name":"文字化けせずに開けますか？","acceptedAnswer":{"@type":"Answer","text":"UTF-8 / UTF-8 BOM / Shift-JIS / EUC-JP / Windows-1252 などの文字コード、カンマ/タブ/セミコロンなどの区切り文字を自動判別し、手動でも切り替えられます。"}},
+{"@type":"Question","name":"マイナンバーやSSNなどのランダム生成はできますか？","acceptedAnswer":{"@type":"Answer","text":"日本のマイナンバー（12桁・チェックデジット付き）、米国SSN、英国NINo、日本/米国/英国の電話番号、ランダム日付の生成に対応しています。"}},
+{"@type":"Question","name":"大きなCSVでも動きますか？","acceptedAnswer":{"@type":"Answer","text":"ブラウザのメモリの範囲内で動作します。ページネーション表示で1万行程度でも快適に閲覧・編集できます。"}}
+]}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+{"@type":"ListItem","position":1,"name":"ホーム","item":"https://csv-editor-mu.vercel.app/"}
+]}
+</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="inner">
+    <a class="brand" href="/">CSV<span>Editor</span></a>
+    <nav class="site-nav">
+      <a href="#tool">ツール</a><a href="#features">機能</a><a href="#howto">使い方</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="lang-switch" href="/en/">English</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>オンラインCSVエディタ ― 完全無料・ブラウザ完結・データ送信なし</h1>
+    <p>CSV / TSV / Excel をドラッグ＆ドロップで開いて、その場で編集。日付変換・ランダムデータ生成（マイナンバー・SSN・電話番号）にも対応。データは一切サーバーにアップロードされません。</p>
+    <div class="badges">
+      <span class="badge">100% クライアント処理</span><span class="badge">登録不要</span><span class="badge">無料</span>
+    </div>
+  </div>
+</section>
+
+<main class="container" id="tool">
+  <div id="app"></div>
+
+  <section class="content-block" id="features">
+    <h2>主な機能</h2>
+    <div class="features">
+      <div class="feature"><h3>ブラウザ完結の編集</h3><p>セルをクリックしてその場で編集。行・列の追加/削除、ヘッダー変更、並べ替え、絞り込み、検索に対応。</p></div>
+      <div class="feature"><h3>充実の入力対応</h3><p>ドラッグ＆ドロップ、クリック選択、テキスト貼り付け、サンプル読み込み。Excel(.xlsx) の複数シートにも対応。</p></div>
+      <div class="feature"><h3>文字コード/区切りの自動判別</h3><p>Shift-JIS / EUC-JP / UTF-8 BOM など日本語 Excel でありがちな文字化けを解消。区切り文字も自動判別。</p></div>
+      <div class="feature"><h3>リージョン対応ランダム生成</h3><p>マイナンバー（検査数字付き）、米国SSN、英国NINo、各国の電話番号、パターン付きランダム日付を生成。</p></div>
+      <div class="feature"><h3>多形式で書き出し</h3><p>Excel(.xlsx)、CSV（エンコーディング/区切り/改行選択可）、TSV、JSON、JSON Lines をワンクリックでダウンロード。</p></div>
+      <div class="feature"><h3>プライバシー最優先</h3><p>ファイルはサーバーに送られず、すべて手元のブラウザで処理。機密データも安心して扱えます。</p></div>
+    </div>
+  </section>
+
+  <section class="content-block" id="howto">
+    <h2>使い方（3ステップ）</h2>
+    <ol class="steps">
+      <li>CSV / TSV / Excel をドラッグ＆ドロップ、または「サンプルデータを読み込む」で開きます。必要に応じて文字コードと区切り文字を選択。</li>
+      <li>セルをクリックして編集したり、「データを生成・処理する」パネルで日付変換やランダムデータ列を追加します。</li>
+      <li>「書き出す」パネルから Excel / CSV / TSV / JSON など任意の形式でダウンロード。ファイルは手元に保存されます。</li>
+    </ol>
+  </section>
+
+  <section class="content-block" id="faq">
+    <h2>よくある質問</h2>
+    <details class="faq-item"><summary>CSVをサーバーに送信せずに編集できますか？</summary><div class="faq-body">はい。当ツールはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。</div></details>
+    <details class="faq-item"><summary>対応しているファイル形式は？</summary><div class="faq-body">CSV、TSV、テキスト、Excel(.xlsx)の読み込みに対応。書き出しは Excel、CSV（UTF-8/Shift-JIS/EUC-JP）、TSV、JSON、JSON Lines から選べます。</div></details>
+    <details class="faq-item"><summary>文字化けせずに開けますか？</summary><div class="faq-body">UTF-8 / UTF-8 BOM / Shift-JIS / EUC-JP / Windows-1252 などの文字コード、カンマ/タブ/セミコロンなどの区切り文字を自動判別し、手動でも切り替えられます。</div></details>
+    <details class="faq-item"><summary>マイナンバーやSSNなどのランダム生成はできますか？</summary><div class="faq-body">日本のマイナンバー（12桁・チェックデジット付き）、米国SSN、英国NINo、日本/米国/英国の電話番号、ランダム日付の生成に対応しています。</div></details>
+    <details class="faq-item"><summary>大きなCSVでも動きますか？</summary><div class="faq-body">ブラウザのメモリの範囲内で動作します。ページネーション表示で1万行程度でも快適に閲覧・編集できます。</div></details>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>当ツールはすべてブラウザ内で処理され、ファイルはサーバーに送信されません。</p>
+    <p><a href="/privacy.html">プライバシー</a><a href="/terms.html">利用規約</a><a href="/en/">English</a></p>
+  </div>
+</footer>
+
+<script src="assets/vendor/papaparse.min.js"></script>
+<script src="assets/vendor/xlsx.full.min.js"></script>
+<script src="assets/vendor/encoding.min.js"></script>
+<script src="assets/js/generators.js"></script>
+<script src="assets/i18n.js"></script>
+<script src="assets/app.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WERRPRW455"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-WERRPRW455');</script>
+</body>
+</html>
