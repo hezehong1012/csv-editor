@@ -3,9 +3,11 @@
   'use strict';
   var G = window.CSVGen;
 
+  // ---------- language detection ----------
   var path = location.pathname.replace(/\\/g, '/');
   window.LANG = (/^\/en(\/|$)/.test(path)) ? 'en' : 'ja';
 
+  // ---------- state ----------
   var S = {
     headers: [], rows: [],
     page: 1, pageSize: 100,
@@ -23,6 +25,7 @@
   function undo() { if (!undoStack.length) return; redoStack.push(snapshot()); restore(undoStack.pop()); }
   function redo() { if (!redoStack.length) return; undoStack.push(snapshot()); restore(redoStack.pop()); }
 
+  // ---------- helpers ----------
   function el(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function download(blob, name) {
@@ -33,6 +36,7 @@
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
 
+  // ---------- build static UI shell ----------
   function buildShell() {
     var app = el('app');
     app.innerHTML =
@@ -62,6 +66,7 @@
       '<label class="chk"><input type="checkbox" id="optHeader" checked> ' + t('headerRow') + '</label>' +
       '<div id="sheetPickWrap" class="hidden"><label>' + t('xlsxSheet') + ' <select id="optSheet"></select></label> <button class="btn" id="btnLoadSheet">'+t('btnLoad')+'</button></div>' +
       '</div></section>' +
+
       '<section class="panel hidden" id="editPanel">' +
       '<div class="toolbar">' +
       '<button class="btn" id="btnAddRow">' + t('addRow') + '</button>' +
@@ -83,6 +88,7 @@
       '<label>' + t('pageSize') + ' <select id="pageSizeSel"><option>50</option><option selected>100</option><option>200</option></select></label>' +
       '<button class="btn" id="prevPage">‹</button><span id="pageInfo"></span><button class="btn" id="nextPage">›</button>' +
       '</div></section>' +
+
       '<section class="panel hidden" id="processPanel">' +
       '<h2>' + t('processTitle') + '</h2>' +
       '<div class="opts">' +
@@ -100,6 +106,7 @@
       '<div id="funcArgs"></div>' +
       '<button class="btn btn-accent" id="btnRun">' + t('btnRun') + '</button>' +
       '<div id="reportBox" class="report hidden"></div></section>' +
+
       '<section class="panel hidden" id="exportPanel">' +
       '<h2>' + t('exportTitle') + '</h2>' +
       '<div class="opts">' +
@@ -114,6 +121,7 @@
       '<button class="btn" data-exp="json">' + t('fmtJson') + '</button>' +
       '<button class="btn" data-exp="jsonl">' + t('fmtJsonl') + '</button>' +
       '</div></section>' +
+
       '<div id="pasteModal" class="modal hidden"><div class="modalbox">' +
       '<h3>' + t('pasteTitle') + '</h3><p>' + t('pasteHint') + '</p>' +
       '<textarea id="pasteArea" rows="10"></textarea>' +
@@ -121,6 +129,7 @@
       '<button class="btn btn-accent" id="btnPasteLoad">' + t('btnLoad') + '</button></div></div></div>';
   }
 
+  // ---------- encoding ----------
   function decodeBuffer(buf, enc) {
     var labels = { 'utf-8': 'utf-8', 'utf-8-bom': 'utf-8', 'shift-jis': 'shift_jis', 'euc-jp': 'euc-jp', 'iso-8859-1': 'iso-8859-1', 'windows-1252': 'windows-1252' };
     if (enc === 'auto') {
@@ -132,6 +141,7 @@
     return new TextDecoder(labels[enc] || 'utf-8').decode(buf);
   }
 
+  // ---------- import ----------
   function parseText(text, delim) {
     var cfg = { header: false, skipEmptyLines: false, complete: function (res) { setData(res.data); } };
     if (delim && delim !== 'auto') cfg.delimiter = delim;
@@ -139,6 +149,7 @@
   }
 
   function setData(matrix) {
+    // trim fully-empty trailing rows
     while (matrix.length && matrix[matrix.length - 1].every(function (c) { return c === '' || c == null; })) matrix.pop();
     if (!matrix.length) return;
     pushHistory();
@@ -150,6 +161,7 @@
       S.headers = matrix[0].map(function (_, i) { return 'Col' + (i + 1); });
       S.rows = matrix;
     }
+    // normalize row lengths
     var ncol = S.headers.length;
     S.rows = S.rows.map(function (r) {
       while (r.length < ncol) r.push('');
@@ -212,6 +224,7 @@
     setData(matrix);
   }
 
+  // ---------- derived rows (sort/filter/search) ----------
   function viewRows() {
     var rows = S.rows.map(function (r, i) { return { r: r, i: i }; });
     if (S.search) {
@@ -235,6 +248,7 @@
     return rows;
   }
 
+  // ---------- render grid ----------
   function render() {
     if (!S.headers.length) return;
     var grid = el('grid');
@@ -243,6 +257,7 @@
     if (S.page > totalPages) S.page = totalPages;
     var start = (S.page - 1) * S.pageSize;
     var pageRows = rows.slice(start, start + S.pageSize);
+
     var html = '<thead><tr><th class="rowcol"></th>';
     S.headers.forEach(function (h, c) {
       html += '<th data-col="' + c + '"><div class="hcell"><span class="htext">' + esc(h) + '</span>' +
@@ -260,10 +275,12 @@
     });
     html += '</tbody>';
     grid.innerHTML = html;
+
     el('statusText').textContent = tex('rowsCols', { rows: S.rows.length, cols: S.headers.length });
     el('pageInfo').textContent = S.page + ' / ' + totalPages;
   }
 
+  // ---------- cell editing ----------
   function beginEdit(td) {
     var r = parseInt(td.dataset.r, 10), c = parseInt(td.dataset.c, 10);
     var old = S.rows[r][c];
@@ -278,6 +295,7 @@
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') input.blur(); if (e.key === 'Escape') { td.textContent = old; } });
   }
 
+  // ---------- toolbar actions ----------
   function addRow() { pushHistory(); S.rows.push(S.headers.map(function () { return ''; })); render(); }
   function addCol() { pushHistory(); var name = prompt(t('targetColName'), 'Col' + (S.headers.length + 1)); if (name == null) return; S.headers.push(name); S.rows.forEach(function (r) { r.push(''); }); render(); }
   function delRow() {
@@ -297,6 +315,7 @@
     pushHistory(); S.headers[S.selectedCol] = name; render();
   }
 
+  // ---------- processing panel ----------
   function buildFuncArgs() {
     var f = el('procFunc').value;
     var box = el('funcArgs');
@@ -344,6 +363,7 @@
       if (S.selectedCol < 0) { alert(t('sourceCol')); return; }
       pushHistory(); colIdx = S.selectedCol;
     }
+
     var skipped = 0;
     S.rows.forEach(function (r, i) {
       var v = '';
@@ -360,6 +380,7 @@
       else if (f === 'phone') { v = G.genPhone(el('argCountry').value, el('argKind').value, el('argPhoneFmt').checked); }
       r[colIdx] = v;
     });
+
     var rb = el('reportBox');
     rb.classList.remove('hidden');
     rb.innerHTML = '<b>' + t('reportTitle') + '</b><br>' +
@@ -368,6 +389,7 @@
     render();
   }
 
+  // ---------- export ----------
   function doExport(kind) {
     if (!S.headers.length) return;
     if (kind === 'xlsx') {
@@ -388,18 +410,21 @@
       var lines = S.rows.map(function (r) { var o = {}; S.headers.forEach(function (h, i) { o[h] = r[i]; }); return JSON.stringify(o); });
       download(new Blob([lines.join('\n')], { type: 'application/x-ndjson' }), 'data.jsonl'); return;
     }
+    // csv / tsv
     var enc = el('expEnc').value;
     var blob;
     if (enc === 'utf-8') blob = new Blob([text], { type: 'text/csv;charset=utf-8' });
     else if (enc === 'utf-8-bom') blob = new Blob(['\uFEFF' + text], { type: 'text/csv;charset=utf-8' });
     else {
       var to = enc === 'sjis' ? 'SJIS' : 'EUCJP';
-      var buf = Encoding.convert(text, { to: to, from: 'UNICODE', type: 'arraybuffer' });
-      blob = new Blob([buf], { type: 'application/octet-stream' });
+      var byteArr = Encoding.convert(text, { to: to, from: 'UNICODE', type: 'array' });
+      var bytes = new Uint8Array(byteArr);
+      blob = new Blob([bytes], { type: 'application/octet-stream' });
     }
     download(blob, kind === 'tsv' ? 'data.tsv' : 'data.csv');
   }
 
+  // ---------- events ----------
   function bind() {
     var dz = el('dropzone');
     ['dragover'].forEach(function (ev) { dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('over'); }); });
@@ -412,6 +437,7 @@
     el('btnPasteCancel').onclick = function () { el('pasteModal').classList.add('hidden'); };
     el('btnPasteLoad').onclick = function () { el('pasteModal').classList.add('hidden'); parseText(el('pasteArea').value, el('optDelim').value); };
     el('btnLoadSheet').onclick = function () { loadSheet(el('optSheet').value); };
+
     el('btnAddRow').onclick = addRow;
     el('btnAddCol').onclick = addCol;
     el('btnDelRow').onclick = delRow;
@@ -424,9 +450,13 @@
     el('pageSizeSel').onchange = function (e) { S.pageSize = parseInt(e.target.value, 10); S.page = 1; render(); };
     el('prevPage').onclick = function () { if (S.page > 1) { S.page--; render(); } };
     el('nextPage').onclick = function () { S.page++; render(); };
+
     el('procFunc').onchange = buildFuncArgs;
     el('btnRun').onclick = runProcess;
+
     document.querySelectorAll('[data-exp]').forEach(function (b) { b.onclick = function () { doExport(b.dataset.exp); }; });
+
+    // grid delegation
     el('grid').addEventListener('click', function (e) {
       var t = e.target;
       if (t.dataset && t.dataset.act === 'sort') {
@@ -447,6 +477,7 @@
     });
   }
 
+  // ---------- boot ----------
   buildShell();
   bind();
 })();
