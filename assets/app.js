@@ -107,6 +107,23 @@
       '<button class="btn btn-accent" id="btnRun">' + t('btnRun') + '</button>' +
       '<div id="reportBox" class="report hidden"></div></section>' +
 
+      '<section class="panel hidden" id="aiPanel">' +
+      '<h2>' + t('aiTitle') + '</h2>' +
+      '<div class="chips">' +
+      '<button class="chip" type="button" data-aichip="phone">' + t('aiChipPhone') + '</button>' +
+      '<button class="chip" type="button" data-aichip="email">' + t('aiChipEmail') + '</button>' +
+      '<button class="chip" type="button" data-aichip="serial">' + t('aiChipSerial') + '</button>' +
+      '<button class="chip" type="button" data-aichip="half">' + t('aiChipHalf') + '</button>' +
+      '<button class="chip" type="button" data-aichip="date">' + t('aiChipDate') + '</button>' +
+      '<button class="chip" type="button" data-aichip="trim">' + t('aiChipTrim') + '</button>' +
+      '<button class="chip" type="button" data-aichip="upper">' + t('aiChipUpper') + '</button>' +
+      '</div>' +
+      '<div class="opts" style="align-items:center">' +
+      '<input type="text" id="aiInstr" style="flex:1;min-width:240px" placeholder="' + t('aiPlaceholder') + '">' +
+      '<button class="btn btn-dark" id="btnAiGo">' + t('aiBtn') + '</button>' +
+      '</div>' +
+      '<div id="aiReport" class="report hidden"></div></section>' +
+
       '<section class="panel hidden" id="exportPanel">' +
       '<h2>' + t('exportTitle') + '</h2>' +
       '<div class="opts">' +
@@ -170,6 +187,7 @@
     S.page = 1; S.sortCol = -1; S.filterCol = -1; S.search = '';
     el('editPanel').classList.remove('hidden');
     el('processPanel').classList.remove('hidden');
+    el('aiPanel').classList.remove('hidden');
     el('exportPanel').classList.remove('hidden');
     buildFuncArgs();
     render();
@@ -389,7 +407,176 @@
     render();
   }
 
-  // ---------- export ----------
+  // ---------- AI panel ----------
+  function colByName(name) {
+    var q = String(name).trim().toLowerCase();
+    for (var i = 0; i < S.headers.length; i++) if (S.headers[i].toLowerCase() === q) return i;
+    return -1;
+  }
+  function halfWidth(s) {
+    return String(s).replace(/[\uFF01-\uFF5E]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); }).replace(/\u3000/g, ' ');
+  }
+  function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      var r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+  function aiReport(msgs, isErr) {
+    var box = el('aiReport');
+    if (!msgs.length) msgs = [t('aiOpFail')];
+    box.className = 'report' + (isErr ? ' err' : '');
+    box.innerHTML = msgs.map(function (m) { return '<div>• ' + esc(m) + '</div>'; }).join('');
+    box.classList.remove('hidden');
+  }
+  function genEmail(row) {
+    var nameIdx = -1;
+    for (var i = 0; i < S.headers.length; i++) if (/name|名前|氏名|name/i.test(S.headers[i])) { nameIdx = i; break; }
+    var base = nameIdx >= 0 ? String(row[nameIdx] || '') : '';
+    base = halfWidth(base).toLowerCase().replace(/[^a-z0-9]+/g, '.').replace(/^\.+|\.+$/g, '');
+    if (!base) base = 'user' + (S.rows.indexOf(row) + 1);
+    return base + '@example.com';
+  }
+
+  // ops: {op:'addColumn', name, gen, args} | {op:'transform', col, fn} | {op:'filterRows', col, value}
+  function applyOps(ops) {
+    var msgs = [];
+    ops.forEach(function (op) {
+      if (op.op === 'addColumn') {
+        var name = op.name || 'col' + (S.headers.length + 1);
+        if (colByName(name) >= 0) name = name + '_' + (S.headers.length + 1);
+        pushHistory();
+        S.headers.push(name);
+        var gen = op.gen || 'serial';
+        S.rows.forEach(function (r, i) {
+          var v = '';
+          if (gen === 'serial') v = String(i + 1);
+          else if (gen === 'uuid') v = uuid();
+          else if (gen === 'phone') v = G.genPhone((op.args && op.args.country) || 'JP', 'mobile', true);
+          else if (gen === 'email') v = genEmail(r);
+          else if (gen === 'number') v = String(1 + Math.floor(Math.random() * 999));
+          else v = (op.args && op.args.value) != null ? String(op.args.value) : '';
+          r.push(v);
+        });
+        msgs.push(tex('aiColAdded', { col: name, n: S.rows.length }));
+        return;
+      }
+      if (op.op === 'transform') {
+        var ci = op.col === -2 ? -2 : (typeof op.col === 'number' ? op.col : colByName(op.col));
+        if (ci === -2) {
+          // all columns
+          pushHistory();
+          var n = 0;
+          S.rows.forEach(function (r) { r.forEach(function (v, j) { var nv = aiTransform(v, op.fn); if (nv !== v) { r[j] = nv; n++; } }); });
+          if (n) msgs.push(tex('aiColChanged', { col: t('aiChipTrim').replace(/\(.*/, ''), n: n }));
+          return;
+        }
+        if (ci < 0) ci = S.selectedCol;
+        if (ci < 0) throw { code: 'nocol' };
+        pushHistory();
+        var cnt = 0;
+        S.rows.forEach(function (r) { var nv = aiTransform(r[ci], op.fn); if (nv !== r[ci]) { r[ci] = nv; cnt++; } });
+        msgs.push(tex('aiColChanged', { col: S.headers[ci], n: cnt }));
+        return;
+      }
+      if (op.op === 'filterRows') {
+        var fc = typeof op.col === 'number' ? op.col : colByName(op.col);
+        if (fc < 0) throw { code: 'nocol' };
+        var val = String(op.value == null ? '' : op.value);
+        if (!val) return;
+        pushHistory();
+        S.rows = S.rows.filter(function (r) { return String(r[fc]).indexOf(val) !== -1; });
+        msgs.push(tex('aiRowsKept', { n: S.rows.length }));
+        return;
+      }
+    });
+    return msgs;
+  }
+
+  function aiTransform(v, fn) {
+    var s = String(v == null ? '' : v);
+    if (s === '') return s;
+    if (fn === 'trim') return s.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+    if (fn === 'upper') return s.toUpperCase();
+    if (fn === 'lower') return s.toLowerCase();
+    if (fn === 'halfwidth') return halfWidth(s);
+    if (fn === 'date') { var r = G.convertDateFormat(s, '', 'YYYY-MM-DD'); return r.ok ? r.value : s; }
+    return s;
+  }
+
+  function localOps(text) {
+    var ops = [];
+    var addWord = /(追加|加え|生成|作成|add|generate|create)/i;
+    if (/(電話番号|phone number|phone)/i.test(text) && addWord.test(text)) {
+      var country = /(アメリカ|米国|united states|\bus\b)/i.test(text) ? 'US'
+        : (/(イギリス|英国|\buk\b)/i.test(text) ? 'UK' : 'JP');
+      ops.push({ op: 'addColumn', name: /電話/.test(text) ? '電話番号' : 'phone', gen: 'phone', args: { country: country } });
+    }
+    if (/(メール|e-?mail)/i.test(text) && addWord.test(text)) ops.push({ op: 'addColumn', name: /メール/.test(text) ? 'メールアドレス' : 'email', gen: 'email', args: {} });
+    if (/(連番|serial|採番)/i.test(text) && addWord.test(text)) ops.push({ op: 'addColumn', name: 'ID', gen: 'serial', args: {} });
+    if (/uuid|guid/i.test(text)) ops.push({ op: 'addColumn', name: 'uuid', gen: 'uuid', args: {} });
+    if (/(半角|half.?width)/i.test(text)) ops.push({ op: 'transform', col: -1, fn: 'halfwidth' });
+    if (/(大文字|upper ?case)/i.test(text)) ops.push({ op: 'transform', col: -1, fn: 'upper' });
+    if (/(小文字|lower ?case)/i.test(text)) ops.push({ op: 'transform', col: -1, fn: 'lower' });
+    if (/(空白|スペース|余分|trim|whitespace)/i.test(text)) ops.push({ op: 'transform', col: -2, fn: 'trim' });
+    if (/(日付|date)/i.test(text) && /(統一|正規|揃え|normali[sz]e|iso|yyyy)/i.test(text)) ops.push({ op: 'transform', col: -1, fn: 'date' });
+    return ops;
+  }
+
+  function chipOp(kind) {
+    if (kind === 'phone') return [{ op: 'addColumn', name: window.LANG === 'ja' ? '電話番号' : 'phone', gen: 'phone', args: { country: 'JP' } }];
+    if (kind === 'email') return [{ op: 'addColumn', name: window.LANG === 'ja' ? 'メールアドレス' : 'email', gen: 'email', args: {} }];
+    if (kind === 'serial') return [{ op: 'addColumn', name: 'ID', gen: 'serial', args: {} }];
+    if (kind === 'half') return [{ op: 'transform', col: -1, fn: 'halfwidth' }];
+    if (kind === 'date') return [{ op: 'transform', col: -1, fn: 'date' }];
+    if (kind === 'trim') return [{ op: 'transform', col: -2, fn: 'trim' }];
+    if (kind === 'upper') return [{ op: 'transform', col: -1, fn: 'upper' }];
+    return [];
+  }
+
+  function runAi(text) {
+    if (!S.headers.length) { alert(t('noData')); return; }
+    var msgs;
+    try {
+      var ops = localOps(text);
+      if (ops.length) {
+        msgs = applyOps(ops);
+        msgs.unshift('✓ ' + t('aiLocal'));
+        render();
+        aiReport(msgs);
+        return;
+      }
+      aiReport([t('aiWait')]);
+      fetch('/api/ai-edit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instruction: text,
+          headers: S.headers,
+          sample: S.rows.slice(0, 30),
+          rowCount: S.rows.length,
+          lang: window.LANG
+        })
+      }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+        .then(function (res) {
+          if (!res.ok) { aiReport([res.body && res.body.error === 'AI_UNAVAILABLE' ? t('aiNoKey') : t('aiApiFail')], true); return; }
+          var ops2 = (res.body && res.body.ops) || [];
+          if (!ops2.length) { aiReport([t('aiOpFail')], true); return; }
+          try {
+            msgs = applyOps(ops2);
+            msgs.unshift('✓ AI');
+            if (res.body.notes) msgs.push(res.body.notes);
+            render();
+            aiReport(msgs);
+          } catch (e) {
+            aiReport([e && e.code === 'nocol' ? t('aiNoCol') : t('aiApiFail')], true);
+          }
+        })
+        .catch(function () { aiReport([t('aiApiFail')], true); });
+    } catch (e) {
+      aiReport([e && e.code === 'nocol' ? t('aiNoCol') : t('aiApiFail')], true);
+    }
+  }
+
   function doExport(kind) {
     if (!S.headers.length) return;
     if (kind === 'xlsx') {
@@ -453,6 +640,18 @@
 
     el('procFunc').onchange = buildFuncArgs;
     el('btnRun').onclick = runProcess;
+
+    document.querySelectorAll('[data-aichip]').forEach(function (b) {
+      b.onclick = function () {
+        try { aiReport(applyOps(chipOp(b.dataset.aichip))); render(); }
+        catch (e) { aiReport([e && e.code === 'nocol' ? t('aiNoCol') : t('aiApiFail')], true); }
+      };
+    });
+    el('btnAiGo').onclick = function () {
+      var v = el('aiInstr').value.trim();
+      if (v) { runAi(v); el('aiInstr').value = ''; }
+    };
+    el('aiInstr').addEventListener('keydown', function (e) { if (e.key === 'Enter') el('btnAiGo').click(); });
 
     document.querySelectorAll('[data-exp]').forEach(function (b) { b.onclick = function () { doExport(b.dataset.exp); }; });
 
