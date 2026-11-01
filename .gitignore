@@ -1,0 +1,10 @@
+# 秘密情報は絶対にコミットしない（Vercel の環境変数からのみ読み込む）
+.env
+.env.*
+!.env.example
+.vercel
+node_modules
+.DS_Store
+
+.vercel
+.env*
