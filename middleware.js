@@ -19,12 +19,14 @@ export default function middleware(request) {
   // 1. explicit switch — always wins and is remembered
   const setlang = url.searchParams.get('setlang');
   if (setlang === 'ja' || setlang === 'en') {
-    const res = Response.redirect(new URL(langPath(setlang), url.origin), 307);
-    res.headers.append(
-      'Set-Cookie',
-      `lang=${setlang}; Path=/; Max-Age=${ONE_YEAR}; SameSite=Lax`
-    );
-    return res;
+    return new Response(null, {
+      status: 307,
+      headers: {
+        Location: new URL(langPath(setlang), url.origin).toString(),
+        'Set-Cookie': `lang=${setlang}; Path=/; Max-Age=${ONE_YEAR}; SameSite=Lax`,
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 
   // 2. never auto-redirect crawlers
