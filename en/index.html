@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Online CSV Editor — Free, Browser-Based, No Upload</title>
-<meta name="description" content="Free browser-based tool to edit CSV / TSV / Excel. Drag & drop to open and edit on the spot, convert dates, and generate realistic random data (SSN, My Number, phone numbers). Your data never leaves the browser.">
-<meta name="keywords" content="csv editor online, edit csv online free, csv viewer, csv to excel, random data generator, fake ssn generator, mock data csv">
-<link rel="canonical" href="https://csv-editor-mu.vercel.app/en/">
-<link rel="alternate" hreflang="ja" href="https://csv-editor-mu.vercel.app/">
-<link rel="alternate" hreflang="en" href="https://csv-editor-mu.vercel.app/en/">
-<link rel="alternate" hreflang="x-default" href="https://csv-editor-mu.vercel.app/">
+<title>CSV Editor Online — Free, No Signup, Edit CSV in Your Browser</title>
+<meta name="description" content="Free online CSV editor. Open, edit, sort and export CSV / TSV / Excel right in your browser — no signup, no upload. Handles semicolon (European) CSV, Windows-1252 / UTF-8 encoding, and generates realistic test data. Your data never leaves your device.">
+<meta name="keywords" content="csv editor online, online csv editor, edit csv file online, csv viewer, open csv file, semicolon csv, csv encoding, csv to excel, random data generator, fake ssn generator, mock data csv">
+<link rel="canonical" href="https://csv-editor.format-portal.com/en/">
+<link rel="alternate" hreflang="ja" href="https://csv-editor.format-portal.com/">
+<link rel="alternate" hreflang="en" href="https://csv-editor.format-portal.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://csv-editor.format-portal.com/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="Online CSV Editor — Free, Browser-Based, No Upload">
-<meta property="og:description" content="Edit CSV / TSV / Excel in your browser. Your data is never uploaded.">
-<meta property="og:url" content="https://csv-editor-mu.vercel.app/en/">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:site_name" content="CSV Editor Online">
+<meta property="og:title" content="CSV Editor Online — Free, No Signup, Edit CSV in Your Browser">
+<meta property="og:description" content="Edit CSV / TSV / Excel in your browser. No signup, no upload — your data never leaves your device.">
+<meta property="og:url" content="https://csv-editor.format-portal.com/en/">
 <meta name="twitter:card" content="summary">
 <meta name="google-site-verification" content="Z1vua0Vo7S6XuQMPogmaM0mN5b5TAKBMX3Vg7AgblTs">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="icon" href="data:,">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"CSV Editor Online","url":"https://csv-editor-mu.vercel.app/en/","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+{"@context":"https://schema.org","@type":"WebApplication","name":"CSV Editor Online","url":"https://csv-editor.format-portal.com/en/","applicationCategory":"DeveloperApplication","operatingSystem":"Web","inLanguage":"en","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -28,12 +30,15 @@
 {"@type":"Question","name":"Which file formats are supported?","acceptedAnswer":{"@type":"Answer","text":"Import CSV, TSV, text and Excel (.xlsx, multi-sheet). Export to Excel, CSV (UTF-8/Shift-JIS/EUC-JP), TSV, JSON and JSON Lines."}},
 {"@type":"Question","name":"Does it handle different encodings and delimiters?","acceptedAnswer":{"@type":"Answer","text":"Yes. Auto-detects UTF-8, UTF-8 BOM, Shift-JIS, EUC-JP and Windows-1252, and comma/semicolon/tab/pipe delimiters. You can also override manually."}},
 {"@type":"Question","name":"Can I generate random SSN, My Number or phone numbers?","acceptedAnswer":{"@type":"Answer","text":"Yes. Generate compliant US SSN, UK NINo, Japanese My Number (with check digit), region-formatted phone numbers, and patterned random dates."}},
-{"@type":"Question","name":"Does it work with large CSV files?","acceptedAnswer":{"@type":"Answer","text":"It runs within your browser's memory. Pagination keeps editing smooth for tens of thousands of rows."}}
+{"@type":"Question","name":"Does it work with large CSV files?","acceptedAnswer":{"@type":"Answer","text":"It runs within your browser's memory. Pagination keeps editing smooth for tens of thousands of rows."}},
+{"@type":"Question","name":"Why does my CSV open with everything in one column?","acceptedAnswer":{"@type":"Answer","text":"That usually means the file uses a different delimiter than your spreadsheet expects — for example a semicolon-delimited file (common in European Excel) opened with comma settings. This editor auto-detects comma, semicolon, tab and pipe delimiters, and you can also set the delimiter manually before importing."}},
+{"@type":"Question","name":"Can I open a European semicolon-separated CSV?","acceptedAnswer":{"@type":"Answer","text":"Yes. Files exported by Excel in German, French, Italian and other European locales often use a semicolon as the field separator because the comma is the decimal mark. The editor detects this automatically, and you can export back to either comma or semicolon when you are done."}},
+{"@type":"Question","name":"Is it really free, and can I use it at work?","acceptedAnswer":{"@type":"Answer","text":"Yes. The tool is free with no account, no row limit imposed by a paywall and no watermark. It is commonly used for internal data cleaning and QA work; because nothing is uploaded, confidential files stay on your own machine."}}
 ]}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
-{"@type":"ListItem","position":1,"name":"Home","item":"https://csv-editor-mu.vercel.app/en/"}
+{"@type":"ListItem","position":1,"name":"Home","item":"https://csv-editor.format-portal.com/en/"}
 ]}
 </script>
 </head>
@@ -42,7 +47,7 @@
   <div class="inner">
     <a class="brand" href="/en/">CSV<span>Editor</span></a>
     <nav class="site-nav">
-      <a href="#tool">Tool</a><a href="#features">Features</a><a href="#howto">How to</a><a href="#faq">FAQ</a>
+      <a href="#tool">Tool</a><a href="#features">Features</a><a href="#regional">Semicolon CSV</a><a href="#howto">How to</a><a href="#faq">FAQ</a>
     </nav>
     <a class="lang-switch" href="/">日本語</a>
   </div>
@@ -50,8 +55,8 @@
 
 <section class="hero">
   <div class="container">
-    <h1>Online CSV Editor — Free, Browser-Based, No Upload</h1>
-    <p>Drag & drop to open CSV / TSV / Excel and edit on the spot. Convert date formats and generate realistic random data (SSN / My Number / phone numbers). Nothing is ever uploaded.</p>
+    <h1>CSV Editor Online — Edit, Clean and Export CSV in Your Browser</h1>
+    <p>Open a CSV, TSV or Excel file straight in your browser and fix it on the spot — no Excel, no signup, no upload. Delimiters (comma or semicolon) and encodings (UTF-8 / Windows-1252) are detected automatically, and you can generate realistic test data such as SSN, NINo and phone numbers.</p>
     <div class="badges">
       <span class="badge">100% Client-Side</span><span class="badge">No Signup</span><span class="badge">Free</span>
     </div>
@@ -73,6 +78,22 @@
     </div>
   </section>
 
+  <section class="content-block" id="why">
+    <h2>Why edit CSV in the browser instead of Excel?</h2>
+    <div class="features">
+      <div class="feature"><h3>Excel silently changes your data</h3><p>Opening a CSV in Excel can strip leading zeros from ZIP codes, turn long account numbers into <em>1.23E+15</em>, and rewrite dates in your local format. A plain-text CSV editor shows the file exactly as stored, so nothing is reformatted behind your back.</p></div>
+      <div class="feature"><h3>No install, works on locked-down machines</h3><p>Nothing to download or license. Open the page in any modern browser — including corporate laptops where Office add-ins are blocked.</p></div>
+      <div class="feature"><h3>Confidential files stay on your machine</h3><p>Unlike most "upload your CSV" services, the file is parsed locally with JavaScript. It never travels over the network, so customer lists and payroll data remain on your device.</p></div>
+      <div class="feature"><h3>Fixes files Excel refuses to open</h3><p>Badly quoted fields, mixed line endings, stray delimiters and files that are too wide for Excel's sheet limit are all readable here.</p></div>
+    </div>
+  </section>
+
+  <section class="content-block" id="regional">
+    <h2>Semicolon CSV, decimal commas and encodings</h2>
+    <p>If a CSV opens with <strong>all the values crammed into one column</strong>, the file almost certainly uses a different delimiter than the comma. Excel in German, French, Italian, Dutch and most other European locales writes <strong>semicolon-separated</strong> files, because the comma is reserved as the decimal mark. The same happens with tab- and pipe-delimited exports from databases and CRMs.</p>
+    <p>This editor inspects the first lines of the file and picks the delimiter for you (comma, semicolon, tab or pipe); you can also force it from the import panel. The same applies to encoding: <strong>UTF-8</strong>, <strong>UTF-8 with BOM</strong>, <strong>Windows-1252</strong> (typical for older European Excel files), and <strong>Shift-JIS / EUC-JP</strong> (Japanese Excel) are detected automatically, which removes the usual <em>Ã¤, Ã¶, Ã©</em> or question-mark garbage. When exporting you can choose comma or semicolon and UTF-8, BOM or legacy encodings, so the file opens correctly on the recipient's machine.</p>
+  </section>
+
   <section class="content-block" id="howto">
     <h2>How it works (3 steps)</h2>
     <ol class="steps">
@@ -89,6 +110,21 @@
     <details class="faq-item"><summary>Does it handle different encodings and delimiters?</summary><div class="faq-body">Yes. Auto-detects UTF-8, UTF-8 BOM, Shift-JIS, EUC-JP and Windows-1252, and comma/semicolon/tab/pipe delimiters. You can also override manually.</div></details>
     <details class="faq-item"><summary>Can I generate random SSN, My Number or phone numbers?</summary><div class="faq-body">Yes. Generate compliant US SSN, UK NINo, Japanese My Number (with check digit), region-formatted phone numbers, and patterned random dates.</div></details>
     <details class="faq-item"><summary>Does it work with large CSV files?</summary><div class="faq-body">It runs within your browser's memory. Pagination keeps editing smooth for tens of thousands of rows.</div></details>
+    <details class="faq-item"><summary>Why does my CSV open with everything in one column?</summary><div class="faq-body">That usually means the file uses a different delimiter than your spreadsheet expects — for example a semicolon-delimited file (common in European Excel) opened with comma settings. This editor auto-detects comma, semicolon, tab and pipe delimiters, and you can also set the delimiter manually before importing.</div></details>
+    <details class="faq-item"><summary>Can I open a European semicolon-separated CSV?</summary><div class="faq-body">Yes. Files exported by Excel in German, French, Italian and other European locales often use a semicolon as the field separator because the comma is the decimal mark. The editor detects this automatically, and you can export back to either comma or semicolon when you are done.</div></details>
+    <details class="faq-item"><summary>Is it really free, and can I use it at work?</summary><div class="faq-body">Yes. The tool is free with no account, no paywall row limit and no watermark. It is commonly used for internal data cleaning and QA work; because nothing is uploaded, confidential files stay on your own machine.</div></details>
+  </section>
+
+  <section class="content-block" id="related">
+    <h2>Related CSV tools</h2>
+    <div class="features">
+      <div class="feature"><h3><a href="https://csv-henkan.format-portal.com/" hreflang="ja">CSV → Excel converter</a></h3><p>Turn a CSV into a properly formatted .xlsx, with encoding and column-type options.</p></div>
+      <div class="feature"><h3><a href="https://csv-code.format-portal.com/" hreflang="ja">Encoding converter</a></h3><p>Detect and convert between UTF-8, Shift-JIS, EUC-JP and other character sets.</p></div>
+      <div class="feature"><h3><a href="https://csv-moji.format-portal.com/" hreflang="ja">Garbled-text repair</a></h3><p>Recover text that was decoded with the wrong character set.</p></div>
+      <div class="feature"><h3><a href="https://csv-excelfix.format-portal.com/" hreflang="ja">Excel CSV mojibake fix</a></h3><p>Make a CSV open with readable characters in Excel.</p></div>
+      <div class="feature"><h3><a href="https://csv.format-portal.com/" hreflang="ja">CSV guides &amp; FAQ</a></h3><p>A reference collection of CSV problems and answers — how to open, convert and clean CSV files.</p></div>
+    </div>
+    <p style="font-size:14px;opacity:.7;margin-top:12px">The related tools currently provide their interface in Japanese.</p>
   </section>
 </main>
 
