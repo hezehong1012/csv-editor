@@ -9,6 +9,7 @@
 
 const RATE_WINDOW_MS = 60000;
 const RATE_MAX = 15;
+const LLM_TIMEOUT_MS = 25000;
 const hits = new Map();
 
 function rateLimited(ip) {
@@ -106,7 +107,8 @@ export default async function handler(req, res) {
         temperature: 0.1,
         max_tokens: 800,
         response_format: { type: 'json_object' }
-      })
+      }),
+      signal: typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? AbortSignal.timeout(LLM_TIMEOUT_MS) : undefined
     });
     if (!r.ok) {
       const detail = await r.text().catch(() => '');
@@ -119,6 +121,10 @@ export default async function handler(req, res) {
     const ops = sanitizeOps(parsed.ops);
     return res.status(200).json({ ops, notes: typeof parsed.notes === 'string' ? parsed.notes.slice(0, 300) : '' });
   } catch (e) {
-    return res.status(500).json({ error: 'AI_EDIT_FAILED', detail: String(e && e.message || e).slice(0, 200) });
+    const msg = String(e && e.message || e);
+    if (e && (e.name === 'TimeoutError' || e.name === 'AbortError' || /aborted|timeout/i.test(msg))) {
+      return res.status(504).json({ error: 'AI_TIMEOUT' });
+    }
+    return res.status(500).json({ error: 'AI_EDIT_FAILED', detail: msg.slice(0, 200) });
   }
 }

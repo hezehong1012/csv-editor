@@ -7,6 +7,9 @@
   var path = location.pathname.replace(/\\/g, '/');
   window.LANG = (/^\/en(\/|$)/.test(path)) ? 'en' : 'ja';
 
+  // Keep the client-side timer below the function's maxDuration (see vercel.json).
+  var AI_EDIT_TIMEOUT_MS = 28000;
+
   // ---------- state ----------
   var S = {
     headers: [], rows: [],
@@ -109,6 +112,7 @@
 
       '<section class="panel hidden" id="aiPanel">' +
       '<h2>' + t('aiTitle') + '</h2>' +
+      '<p class="ai-note">' + t('aiPrivacy') + '</p>' +
       '<div class="chips">' +
       '<button class="chip" type="button" data-aichip="phone">' + t('aiChipPhone') + '</button>' +
       '<button class="chip" type="button" data-aichip="email">' + t('aiChipEmail') + '</button>' +
@@ -545,7 +549,15 @@
         aiReport(msgs);
         return;
       }
+      var started = Date.now();
       aiReport([t('aiWait')]);
+      var ticker = setInterval(function () {
+        aiReport([t('aiWait') + ' ' + Math.round((Date.now() - started) / 1000) + 's']);
+      }, 1000);
+      var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, AI_EDIT_TIMEOUT_MS) : null;
+      var finish = function () { clearInterval(ticker); if (timer) clearTimeout(timer); };
+
       fetch('/api/ai-edit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -555,9 +567,11 @@
           sample: S.rows.slice(0, 30),
           rowCount: S.rows.length,
           lang: window.LANG
-        })
+        }),
+        signal: ctrl ? ctrl.signal : undefined
       }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
         .then(function (res) {
+          finish();
           if (!res.ok) { aiReport([res.body && res.body.error === 'AI_UNAVAILABLE' ? t('aiNoKey') : t('aiApiFail')], true); return; }
           var ops2 = (res.body && res.body.ops) || [];
           if (!ops2.length) { aiReport([t('aiOpFail')], true); return; }
@@ -571,7 +585,10 @@
             aiReport([e && e.code === 'nocol' ? t('aiNoCol') : t('aiApiFail')], true);
           }
         })
-        .catch(function () { aiReport([t('aiApiFail')], true); });
+        .catch(function (e) {
+          finish();
+          aiReport([(e && e.name === 'AbortError') ? t('aiTimeout') : t('aiApiFail')], true);
+        });
     } catch (e) {
       aiReport([e && e.code === 'nocol' ? t('aiNoCol') : t('aiApiFail')], true);
     }

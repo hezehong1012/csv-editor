@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>オンラインCSVエディタ ― 完全無料・ブラウザ完結・データ送信なし</title>
-<meta name="description" content="ブラウザだけでCSV/TSV/Excelを編集できる無料ツール。ドラッグ＆ドロップで開いてその場で編集、日付変換・マイナンバー/SSN/電話番号のランダム生成にも対応。データはサーバーに送信されません。">
+<title>オンラインCSVエディタ ― 完全無料・ブラウザ完結で編集</title>
+<meta name="description" content="ブラウザだけでCSV/TSV/Excelを編集できる無料ツール。ドラッグ＆ドロップで開いてその場で編集、日付変換・マイナンバー/SSN/電話番号のランダム生成にも対応。編集・変換・書き出しはブラウザ内で完結します。">
 <meta name="keywords" content="CSV エディター, csv 編集, csv 変換, csv excel, オンライン csv, モックデータ生成, マイナンバー 生成">
 <link rel="canonical" href="https://csv-editor.format-portal.com/">
 <link rel="alternate" hreflang="ja" href="https://csv-editor.format-portal.com/">
@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:title" content="オンラインCSVエディタ ― 完全無料・ブラウザ完結">
-<meta property="og:description" content="ブラウザだけでCSV/TSV/Excelを編集。データはサーバーに送信されません。">
+<meta property="og:description" content="ブラウザだけでCSV/TSV/Excelを編集。編集・変換・書き出しはブラウザ内で完結します。">
 <meta property="og:url" content="https://csv-editor.format-portal.com/">
 <meta name="twitter:card" content="summary">
 <meta name="google-site-verification" content="Z1vua0Vo7S6XuQMPogmaM0mN5b5TAKBMX3Vg7AgblTs">
@@ -24,7 +24,7 @@
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-{"@type":"Question","name":"CSVをサーバーに送信せずに編集できますか？","acceptedAnswer":{"@type":"Answer","text":"はい。当ツールはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。"}},
+{"@type":"Question","name":"CSVをサーバーに送信せずに編集できますか？","acceptedAnswer":{"@type":"Answer","text":"はい。編集・変換・書き出しはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。例外はAI編集機能で、これを使ったときだけ列名と先頭30行のサンプルがLLMに送信されます。"}},
 {"@type":"Question","name":"対応しているファイル形式は？","acceptedAnswer":{"@type":"Answer","text":"CSV、TSV、テキスト、Excel(.xlsx)の読み込みに対応。書き出しは Excel、CSV（UTF-8/Shift-JIS/EUC-JP）、TSV、JSON、JSON Lines から選べます。"}},
 {"@type":"Question","name":"文字化けせずに開けますか？","acceptedAnswer":{"@type":"Answer","text":"UTF-8 / UTF-8 BOM / Shift-JIS / EUC-JP / Windows-1252 などの文字コード、カンマ/タブ/セミコロンなどの区切り文字を自動判別し、手動でも切り替えられます。"}},
 {"@type":"Question","name":"マイナンバーやSSNなどのランダム生成はできますか？","acceptedAnswer":{"@type":"Answer","text":"日本のマイナンバー（12桁・チェックデジット付き）、米国SSN、英国NINo、日本/米国/英国の電話番号、ランダム日付の生成に対応しています。"}},
@@ -50,8 +50,8 @@
 
 <section class="hero">
   <div class="container">
-    <h1>オンラインCSVエディタ ― 完全無料・ブラウザ完結・データ送信なし</h1>
-    <p>CSV / TSV / Excel をドラッグ＆ドロップで開いて、その場で編集。日付変換・ランダムデータ生成（マイナンバー・SSN・電話番号）にも対応。データは一切サーバーにアップロードされません。</p>
+    <h1>オンラインCSVエディタ ― 完全無料・ブラウザ完結で編集</h1>
+    <p>CSV / TSV / Excel をドラッグ＆ドロップで開いて、その場で編集。日付変換・ランダムデータ生成（マイナンバー・SSN・電話番号）にも対応。編集・変換・書き出しはブラウザ内で完結します（AI編集を使う場合のみ、列名と先頭30行のサンプルを送信）。</p>
     <div class="badges">
       <span class="badge">100% クライアント処理</span><span class="badge">登録不要</span><span class="badge">無料</span>
     </div>
@@ -69,7 +69,7 @@
       <div class="feature"><h3>文字コード/区切りの自動判別</h3><p>Shift-JIS / EUC-JP / UTF-8 BOM など日本語 Excel でありがちな文字化けを解消。区切り文字も自動判別。</p></div>
       <div class="feature"><h3>リージョン対応ランダム生成</h3><p>マイナンバー（検査数字付き）、米国SSN、英国NINo、各国の電話番号、パターン付きランダム日付を生成。</p></div>
       <div class="feature"><h3>多形式で書き出し</h3><p>Excel(.xlsx)、CSV（エンコーディング/区切り/改行選択可）、TSV、JSON、JSON Lines をワンクリックでダウンロード。</p></div>
-      <div class="feature"><h3>プライバシー最優先</h3><p>ファイルはサーバーに送られず、すべて手元のブラウザで処理。機密データも安心して扱えます。</p></div>
+      <div class="feature"><h3>プライバシー最優先</h3><p>ファイルはサーバーに送られず、すべて手元のブラウザで処理。機密データも安心して扱えます（AI編集を使う場合のみ、列名と先頭30行のサンプルを送信）。</p></div>
     </div>
   </section>
 
@@ -84,7 +84,7 @@
 
   <section class="content-block" id="faq">
     <h2>よくある質問</h2>
-    <details class="faq-item"><summary>CSVをサーバーに送信せずに編集できますか？</summary><div class="faq-body">はい。当ツールはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。</div></details>
+    <details class="faq-item"><summary>CSVをサーバーに送信せずに編集できますか？</summary><div class="faq-body">はい。編集・変換・書き出しはすべてブラウザ内で処理され、ファイルはサーバーにアップロードされません。登録やログインも不要です。例外はAI編集機能で、これを使ったときだけ列名と先頭30行のサンプルがLLMに送信されます。</div></details>
     <details class="faq-item"><summary>対応しているファイル形式は？</summary><div class="faq-body">CSV、TSV、テキスト、Excel(.xlsx)の読み込みに対応。書き出しは Excel、CSV（UTF-8/Shift-JIS/EUC-JP）、TSV、JSON、JSON Lines から選べます。</div></details>
     <details class="faq-item"><summary>文字化けせずに開けますか？</summary><div class="faq-body">UTF-8 / UTF-8 BOM / Shift-JIS / EUC-JP / Windows-1252 などの文字コード、カンマ/タブ/セミコロンなどの区切り文字を自動判別し、手動でも切り替えられます。</div></details>
     <details class="faq-item"><summary>マイナンバーやSSNなどのランダム生成はできますか？</summary><div class="faq-body">日本のマイナンバー（12桁・チェックデジット付き）、米国SSN、英国NINo、日本/米国/英国の電話番号、ランダム日付の生成に対応しています。</div></details>
@@ -105,7 +105,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>当ツールはすべてブラウザ内で処理され、ファイルはサーバーに送信されません。</p>
+    <p>当ツールの編集・変換・書き出しはすべてブラウザ内で処理され、ファイルはサーバーに送信されません。AI編集を使った場合のみ、列名と先頭30行のサンプルがLLMに送信されます。</p>
     <p><a href="/privacy.html">プライバシー</a><a href="/terms.html">利用規約</a><a href="/?setlang=en">English</a></p>
   </div>
 </footer>
